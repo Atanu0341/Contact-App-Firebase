@@ -2,35 +2,32 @@ import Navbar from "./components/Navbar";
 import { FiSearch } from "react-icons/fi";
 import { AiFillPlusCircle } from "react-icons/ai";
 import { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "./config/firebase";
 import ContactCard from "./components/ContactCard";
-import Modal from "./components/Modal";
+import AddAndUpdateContact from "./components/AddAndUpdateContact";
+import useDisclose from "./hooks/useDisclose";
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
 
-  const [isOpen, setOpen] = useState(false);
-
-  const onOpen = () => {
-    setOpen(true);
-  };
-  const onClose = () => {
-    setClose(false);
-  };
+  const { isOpen, onClose, onOpen } = useDisclose();
 
   useEffect(() => {
     const getContacts = async () => {
       try {
         const contactsRef = collection(db, "contacts");
-        const contactsSnapshot = await getDocs(contactsRef);
-        const contactLists = contactsSnapshot.docs.map((doc) => {
-          return {
-            id: doc.id,
-            ...doc.data(),
-          };
+
+        onSnapshot(contactsRef, (snapshot) => {
+          const contactLists = snapshot.docs.map((doc) => {
+            return {
+              id: doc.id,
+              ...doc.data(),
+            };
+          });
+          setContacts(contactLists);
+          return contactLists;
         });
-        setContacts(contactLists);
       } catch (error) {
         console.log(error);
       }
@@ -51,7 +48,10 @@ const App = () => {
               className="bg-transparent border text-white pl-9 border-white rounded-md h-10 flex-grow"
             />
           </div>
-          <AiFillPlusCircle onClick={onOpen} className="text-5xl text-white cursor-pointer" />
+          <AiFillPlusCircle
+            onClick={onOpen}
+            className="text-5xl text-white cursor-pointer"
+          />
         </div>
         <div className="mt-4 gap-3 flex flex-col">
           {contacts.map((contact) => (
@@ -59,9 +59,7 @@ const App = () => {
           ))}
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        Hi
-      </Modal>
+      <AddAndUpdateContact onClose={onClose} isOpen={isOpen} />
     </>
   );
 };

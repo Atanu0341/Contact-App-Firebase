@@ -6,6 +6,7 @@ import { db } from "../config/firebase";
 import { deleteDoc, doc } from "firebase/firestore";
 import AddAndUpdateContact from "./AddAndUpdateContact";
 import useDisclose from "../hooks/useDisclose";
+import { toast } from "react-toastify";
 
 const ContactCard = ({ contact }) => {
   const { isOpen, onClose, onOpen } = useDisclose();
@@ -13,6 +14,7 @@ const ContactCard = ({ contact }) => {
   const deleteContact = async (id) => {
     try {
       await deleteDoc(doc(db, "contacts", id));
+      toast.success("Contact Deleted Successfully")
     } catch (error) {
       console.log(error);
     }

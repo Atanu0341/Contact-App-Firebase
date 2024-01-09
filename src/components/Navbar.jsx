@@ -3,8 +3,8 @@ import React from "react";
 const Navbar = () => {
   return (
     <div className="h-[60px] bg-white my-4 rounded-lg flex justify-center items-center gap-2 text-xl font-medium">
-      <img src="/firebase.svg" alt="firebase-icon" />
-      <h1>Firebase Contact App</h1>
+      <img src="/1686878.png" className="h-3/4" alt="firebase-icon" />
+      <h1>Contact Book</h1>
     </div>
   );
 };
